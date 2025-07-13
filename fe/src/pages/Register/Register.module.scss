@@ -1,0 +1,20 @@
+.Register {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 1rem;
+  background-color: rgb(144, 144, 244);
+  width: 20rem;
+
+  .Form {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+
+    .RegisterButton {
+      background-color: white;
+      padding: 1rem 3rem;
+    }
+  }
+}

@@ -1,0 +1,13 @@
+.Header {
+  display: flex;
+  padding: 1rem 2rem;
+  justify-content: space-between;
+  align-items: center;
+
+  .Logo {
+  }
+  .LoginRegister {
+    display: flex;
+    gap: 1rem;
+  }
+}

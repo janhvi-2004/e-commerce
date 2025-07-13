@@ -1,0 +1,13 @@
+.Layout {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+
+    main {
+        overflow-y: auto;
+        margin: 4rem;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+}

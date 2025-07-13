@@ -1,0 +1,25 @@
+.ButtonWrapper {
+  .Button {
+    padding: 0.5rem 0.75rem;
+    border-radius: 2rem;
+    background-color: rgb(144, 144, 244);
+    cursor: pointer;
+    border: none;
+    transform: scale(1);
+    transition: all 0.3s ease;
+    
+
+    &:hover {
+      background-color: white;
+      transform: scale(1.05);
+    }
+  }
+
+  .ButtonSuccess {
+    background-color: rgb(182, 239, 182);
+  }
+
+  .ButtonError {
+    background-color: rgb(240, 178, 178);
+  }
+}
