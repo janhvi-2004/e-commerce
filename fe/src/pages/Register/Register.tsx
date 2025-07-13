@@ -1,53 +1,79 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import styles from "./Register.module.scss";
 import Input from "../../components/Input/Input";
 import Button from "../../components/Button/Button";
+import axiosInstance from "../../axiosInstance";
+import { toast } from "react-toastify";
 
 function Register() {
-  const [firstName, setFirstName] = useState("");
-  const [lastName, setLastName] = useState("");
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
+  const [form, setForm] = useState({
+    firstName: "",
+    lastName: "",
+    username: "",
+    password: "",
+  });
 
-  const submitRegisterForm = (e: any) => {
-    // e.preventDefault();
-    console.log(firstName, lastName, username, password);
-    
-    
-  }
+  const handleChange = (e: any) => {
+    setForm({
+      ...form,
+      [e.target.id]: e.target.value,
+    });
+  };
+  const submitRegisterForm = async (e: any) => {
+    e.preventDefault();
+    const data = form;
+    try {
+      const res = await axiosInstance.post("/register", data);
+      toast.success("User registered successfully!");
+      setForm({
+        firstName: "",
+        lastName: "",
+        username: "",
+        password: "",
+      });
+      console.log(res);
+    } catch (error) {
+      console.log(error);
+      throw new Error();
+    }
+  };
 
   return (
     <div className={styles.Register}>
-      <form className={styles.Form} action={submitRegisterForm}>
+      <form className={styles.Form} onSubmit={submitRegisterForm}>
         <Input
           type={"text"}
-          value={firstName}
-          id={"First Name"}
+          value={form.firstName}
+          id={"firstName"}
           placeholder={"Enter First Name"}
-          onChange={(e) => setFirstName(e.target.value)}
+          onChange={handleChange}
         />
         <Input
           type={"text"}
-          value={lastName}
-          id={"Last Name"}
+          value={form.lastName}
+          id={"lastName"}
           placeholder={"Enter Last Name"}
-          onChange={(e) => setLastName(e.target.value)}
+          onChange={handleChange}
         />
         <Input
           type={"text"}
-          value={username}
-          id={"Username"}
+          value={form.username}
+          id={"username"}
           placeholder="Enter username"
-          onChange={(e) => setUsername(e.target.value)}
+          onChange={handleChange}
         />
         <Input
           type={"text"}
-          value={password}
-          id={"Password"}
+          value={form.password}
+          id={"password"}
           placeholder="Enter password"
-          onChange={(e) => setPassword(e.target.value)}
+          onChange={handleChange}
         />
-       <Button className={styles.RegisterButton} text={"Register"} type={"Common"}/>
+        <Button
+          className={styles.RegisterButton}
+          text={"Register"}
+          type={"Common"}
+        />
       </form>
     </div>
   );
