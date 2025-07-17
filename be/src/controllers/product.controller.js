@@ -48,8 +48,17 @@ const addProduct = asyncHandler(async (req, res) => {
     .json(new ApiResponse(200, createdProduct, "Product added successfully"));
 });
 
+const getProducts = asyncHandler(async (req, res) => {
+  try {
+    const products = await Product.find();
+    res.status(200).json(products);
+  } catch (error) {
+    res.status(500).json({ message: "Failed to fetch products", error });
+  }
+});
+
 const deleteProduct = asyncHandler(async (req, res) => {});
 
 const updateProduct = asyncHandler(async (req, res) => {});
 
-export { addProduct };
+export { addProduct, getProducts };

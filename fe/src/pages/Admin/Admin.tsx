@@ -1,5 +1,4 @@
-import React, { useState } from "react";
-import type { AdminProps } from "./Admin.types";
+import { useEffect, useState } from "react";
 import styles from "./Admin.module.scss";
 import Input from "../../components/Input/Input";
 import Button from "../../components/Button/Button";
@@ -53,6 +52,16 @@ function Admin() {
       throw new Error();
     }
   };
+
+  const getProducts = async () => {
+    const products = await axiosInstance.get("/product/products");
+    console.log(products, "");
+  };
+
+  useEffect(() => {
+    getProducts();
+  }, []);
+
   return (
     <div className={styles.AdminPage}>
       <div className={styles.ProductForm}>
