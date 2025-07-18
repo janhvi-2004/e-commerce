@@ -1,7 +1,7 @@
 export interface ProductCardProps {
     productName: string,
-    productCategory: "Topwear" | "Bottomwear",
+    category: "Topwear" | "Bottomwear",
     price: number,
     quantity: number,
-    image: string
+    productImage: string
 }

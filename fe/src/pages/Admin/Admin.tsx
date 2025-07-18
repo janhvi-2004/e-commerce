@@ -4,6 +4,8 @@ import Input from "../../components/Input/Input";
 import Button from "../../components/Button/Button";
 import axiosInstance from "../../axiosInstance";
 import { toast } from "react-toastify";
+import Table from "../../components/Table/Table";
+import type { ProductCardProps } from "../../components/ProductCard/ProductCard.types";
 
 function Admin() {
   const [form, setForm] = useState({
@@ -14,6 +16,10 @@ function Admin() {
   });
 
   const [uploadedImage, setUploadedImage] = useState<File | null>(null);
+
+  const [data, setData] = useState<ProductCardProps[]>([]);
+
+  const [showAddModal, setShowAddModal] = useState(false);
 
   const handleChange = (e: any) => {
     setForm({
@@ -39,6 +45,7 @@ function Admin() {
           "Content-Type": "multipart/form-data",
         },
       });
+      setShowAddModal(false)
       toast.success("Product added successfully");
       setForm({
         productName: "",
@@ -47,7 +54,6 @@ function Admin() {
         quantity: "",
       });
       setUploadedImage(null);
-      console.log(res);
     } catch (error) {
       throw new Error();
     }
@@ -55,64 +61,118 @@ function Admin() {
 
   const getProducts = async () => {
     const products = await axiosInstance.get("/product/products");
-    console.log(products, "");
+    setData(products.data);
+    console.log(products.data, "");
   };
 
   useEffect(() => {
     getProducts();
-  }, []);
+  }, [data]);
+
+  const finalProducts: ProductCardProps[] = data.map((product) => {
+    return {
+      productName: product.productName,
+      category:
+        product.category.toLowerCase() === "top wear"
+          ? "Topwear"
+          : "Bottomwear",
+      price: product.price,
+      quantity: product.quantity,
+      productImage: product.productImage,
+    };
+  });
+
+  const handleShowAddModal = () => {
+    setShowAddModal((prev) => !prev);
+  };
 
   return (
     <div className={styles.AdminPage}>
-      <div className={styles.ProductForm}>
-        <form className={styles.Form} onSubmit={submitAddProductForm}>
-          <Input
-            type={"text"}
-            value={form.productName}
-            id={"productName"}
-            placeholder={"Enter product name"}
-            onChange={handleChange}
-          />
-          <div className={styles.SelectInput}>
-            <label>Product Category</label>
-            <select
-              id="category"
-              value={form.category}
-              onChange={handleChange}
-              className={styles.Select}
-            >
-              <option value="">Select Category</option>
-              <option value="Top Wear">Top Wear</option>
-              <option value="Bottom Wear">Bottom Wear</option>
-            </select>
+      {showAddModal && (
+        <div className={styles.ModalOverlay}>
+          <div className={styles.Modal}>
+            <form className={styles.Form} onSubmit={submitAddProductForm}>
+              <div className={styles.ModalHeader}>
+                <Button
+                  onClick={handleShowAddModal}
+                  text={"X"}
+                  type={"Common"}
+                />
+              </div>
+              <div className={styles.ModalBody}>
+                <div className={styles.Row}>
+                  <Input
+                    type="text"
+                    value={form.productName}
+                    id="productName"
+                    placeholder="Enter product name"
+                    onChange={handleChange}
+                    className={styles.Label}
+                  />
+                  <div className={styles.SelectInput}>
+                    <label>Product Category</label>
+                    <select
+                      id="category"
+                      value={form.category}
+                      onChange={handleChange}
+                      className={styles.Select}
+                    >
+                      <option value="">Select Category</option>
+                      <option value="Top Wear">Top Wear</option>
+                      <option value="Bottom Wear">Bottom Wear</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div className={styles.Row}>
+                  <Input
+                    type="text"
+                    value={form.price}
+                    id="price"
+                    placeholder="Enter price"
+                    onChange={handleChange}
+                    className={styles.Label}
+                  />
+                  <Input
+                    type="text"
+                    value={form.quantity}
+                    id="quantity"
+                    placeholder="Enter quantity"
+                    onChange={handleChange}
+                    className={styles.Label}
+                  />
+                </div>
+
+                <div className={styles.Row}>
+                  <Input
+                    type="file"
+                    id="productImage"
+                    placeholder="Enter image"
+                    onChange={(e) =>
+                      setUploadedImage(e.target.files?.[0] || null)
+                    }
+                  />
+                </div>
+              </div>
+              <Button
+                className={styles.AddProductBtn}
+                text={"Add Product"}
+                type={"Success"}
+              />
+            </form>
           </div>
-          <Input
-            type={"text"}
-            value={form.price}
-            id={"price"}
-            placeholder="Enter price"
-            onChange={handleChange}
-          />
-          <Input
-            type={"text"}
-            value={form.quantity}
-            id={"quantity"}
-            placeholder="Enter quantity"
-            onChange={handleChange}
-          />
-          <Input
-            type={"file"}
-            id={"productImage"}
-            placeholder="Enter image url"
-            onChange={(e) => setUploadedImage(e.target.files?.[0] || null)}
-          />
-          <Button
-            className={styles.AddProductBtn}
-            text={"Add Product"}
-            type={"Success"}
-          />
-        </form>
-      </div>
+        </div>
+      )}
+      <Button
+        text={"Add Product"}
+        type={"Common"}
+        onClick={handleShowAddModal}
+      />
+      <Table
+        caption={"Products Table"}
+        headers={["Product Name", "Category", "Price", "Quantity", "Image"]}
+        data={finalProducts}
+      />
     </div>
   );
 }
