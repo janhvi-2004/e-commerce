@@ -4,6 +4,7 @@ import Input from "../../components/Input/Input";
 import Button from "../../components/Button/Button";
 import axiosInstance from "../../axiosInstance";
 import { toast } from "react-toastify";
+import { registerUser } from "../../services/user.service";
 
 function Register() {
   const [form, setForm] = useState({
@@ -21,9 +22,8 @@ function Register() {
   };
   const submitRegisterForm = async (e: any) => {
     e.preventDefault();
-    const data = form;
     try {
-      const res = await axiosInstance.post("/register", data);
+      await registerUser(form);
       toast.success("User registered successfully!");
       setForm({
         firstName: "",
@@ -32,7 +32,7 @@ function Register() {
         password: "",
       });
     } catch (error) {
-      throw new Error();
+      toast.error("Registration failed. Please try again.")
     }
   };
 

@@ -15,7 +15,6 @@ const addProduct = asyncHandler(async (req, res) => {
   }
 
   const imageLocalPath = req.files?.productImage[0]?.path;
-  console.log("local", imageLocalPath);
 
   if (!imageLocalPath) {
     throw new ApiError(400, "Image file is required");
@@ -57,8 +56,26 @@ const getProducts = asyncHandler(async (req, res) => {
   }
 });
 
-const deleteProduct = asyncHandler(async (req, res) => {});
+const deleteProduct = asyncHandler(async (req, res) => {
+  const { _id } = req.body;
+  console.log("id to delete",_id);
 
-const updateProduct = asyncHandler(async (req, res) => {});
+  if (!_id) {
+    throw new ApiError(400, "Product Id is required");
+  }
+  const productToDelete = await Product.findByIdAndDelete(_id);
+  console.log("product to delete", productToDelete);
 
-export { addProduct, getProducts };
+  if (!productToDelete) {
+    throw new ApiError(404, "Product not found");
+  }
+  res
+    .status(200)
+    .json(new ApiResponse(200, deleteProduct, "Product deleted successfully"));
+});
+
+const updateProduct = asyncHandler(async (req, res) => {
+  
+});
+
+export { addProduct, getProducts, deleteProduct };

@@ -2,24 +2,26 @@ import { useState } from "react";
 import Input from "../../components/Input/Input";
 import Button from "../../components/Button/Button";
 import styles from "./Login.module.scss";
-import axiosInstance from "../../axiosInstance";
 import { toast } from "react-toastify";
+import { loginUser } from "../../services/user.service";
 
 function Login() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+   
   const submitLoginForm = async (e: any) => {
     e.preventDefault();
-
+    const data = { username, password };
     try {
-      const res = await axiosInstance.post("/login", { username, password });
+      await loginUser(data);
       toast.success("User Logged in successfully");
       setUsername("");
       setPassword("");
     } catch (err) {
-      throw new Error();
+      toast.error("Something went wrong !!");
     }
   };
+   
   return (
     <div className={styles.Login}>
       <form className={styles.Form} onSubmit={submitLoginForm}>

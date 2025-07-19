@@ -6,6 +6,7 @@ import axiosInstance from "../../axiosInstance";
 import { toast } from "react-toastify";
 import Table from "../../components/Table/Table";
 import type { ProductCardProps } from "../../components/ProductCard/ProductCard.types";
+import { addProduct, deleteProduct, fetchProducts } from "../../services/product.service";
 
 function Admin() {
   const [form, setForm] = useState({
@@ -40,12 +41,8 @@ function Admin() {
     formData.append("quantity", form.quantity);
     formData.append("productImage", uploadedImage);
     try {
-      const res = await axiosInstance.post("/product/add", formData, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      });
-      setShowAddModal(false)
+      const res = await addProduct(formData);
+      setShowAddModal(false);
       toast.success("Product added successfully");
       setForm({
         productName: "",
@@ -54,22 +51,37 @@ function Admin() {
         quantity: "",
       });
       setUploadedImage(null);
+console.log("response", res);
+
+      const addedProduct = res.data;
+      setData((prev) => [
+        ...prev,
+        {
+          _id: addedProduct._id,
+          productName: addedProduct.productName,
+          category: addedProduct.category,
+          price: addedProduct.price,
+          quantity: addedProduct.quantity,
+          productImage: addedProduct.productImage,
+        },
+      ]);
     } catch (error) {
       throw new Error();
     }
   };
 
   const getProducts = async () => {
-    const products = await axiosInstance.get("/product/products");
-    setData(products.data);
+    const products = await fetchProducts();
+    setData(products);
   };
 
   useEffect(() => {
     getProducts();
-  }, [data]);
+  }, []);
 
   const finalProducts: ProductCardProps[] = data.map((product) => {
     return {
+      _id: product._id,
       productName: product.productName,
       category:
         product.category.toLowerCase() === "top wear"
@@ -83,6 +95,17 @@ function Admin() {
 
   const handleShowAddModal = () => {
     setShowAddModal((prev) => !prev);
+  };
+
+  const handleDeleteProduct = async (_id: string) => {
+    console.log("dfghj", _id);
+    
+    try {
+      await deleteProduct(_id);
+      setData((prev) => prev.filter((product) => product._id !== _id));
+    } catch (error) {
+      throw new Error();
+    }
   };
 
   return (
@@ -171,6 +194,7 @@ function Admin() {
         caption={"Products Table"}
         headers={["Product Name", "Category", "Price", "Quantity", "Image"]}
         data={finalProducts}
+        handleDelete={handleDeleteProduct}
       />
     </div>
   );

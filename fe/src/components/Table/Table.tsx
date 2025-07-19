@@ -2,14 +2,16 @@ import type { TableProps } from "./Table.types";
 import styles from "./Table.module.scss";
 import Button from "../Button/Button";
 
-function Table({ caption, headers, data }: TableProps) {
+function Table({ caption, headers, data, handleDelete }: TableProps) {
   return (
     <table className={styles.Table}>
       <caption className={styles.Caption}>{caption}</caption>
       <thead>
         <tr>
           {headers.map((header, index) => (
-            <th key={index} className={styles.HeaderCell}>{header}</th>
+            <th key={index} className={styles.HeaderCell}>
+              {header}
+            </th>
           ))}
           <th>Actions</th>
         </tr>
@@ -22,11 +24,15 @@ function Table({ caption, headers, data }: TableProps) {
             <td className={styles.Cell}>{rowData.quantity}</td>
             <td className={styles.Cell}>₹{rowData.price}</td>
             <td className={styles.Cell}>
-              <img src={rowData.productImage} alt={rowData.productName} className={styles.Image} />
+              <img
+                src={rowData.productImage}
+                alt={rowData.productName}
+                className={styles.Image}
+              />
             </td>
             <td className={`${styles.Cell} ${styles.Actions}`}>
               <Button text={"Update"} type={"Common"} />
-              <Button text={"Delete"} type={"Error"}/>
+              <Button text={"Delete"} type={"Error"} onClick={() => handleDelete(rowData?._id)} />
             </td>
           </tr>
         ))}
