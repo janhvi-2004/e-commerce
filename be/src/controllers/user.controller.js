@@ -5,7 +5,6 @@ import { User } from "../models/user.model.js";
 
 const registerUser = asyncHandler(async (req, res) => {
   const { firstName, lastName, username, password } = req.body;
-  console.log(firstName, lastName, username, password);
 
   if (
     [firstName, lastName, username, password].some((field) => {
@@ -28,7 +27,6 @@ const registerUser = asyncHandler(async (req, res) => {
   });
 
   const createduser = await User.findById(user._id);
-  console.log(createduser);
 
   if (!createduser) {
     throw new ApiError(500, "Something went wrong while registering user");
@@ -41,7 +39,6 @@ const registerUser = asyncHandler(async (req, res) => {
 
 const loginUser = asyncHandler(async (req, res) => {
   const { username, password } = req.body;
-  console.log(username, password, "dfghj");
   
   if (
     [username, password].some((field) => {

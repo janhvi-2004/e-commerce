@@ -62,7 +62,6 @@ function Admin() {
   const getProducts = async () => {
     const products = await axiosInstance.get("/product/products");
     setData(products.data);
-    console.log(products.data, "");
   };
 
   useEffect(() => {

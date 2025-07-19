@@ -31,9 +31,7 @@ function Register() {
         username: "",
         password: "",
       });
-      console.log(res);
     } catch (error) {
-      console.log(error);
       throw new Error();
     }
   };

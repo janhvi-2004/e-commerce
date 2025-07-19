@@ -16,7 +16,6 @@ function Login() {
       toast.success("User Logged in successfully");
       setUsername("");
       setPassword("");
-      console.log(res, "login response");
     } catch (err) {
       throw new Error();
     }
