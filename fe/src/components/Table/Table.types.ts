@@ -5,4 +5,5 @@ export interface TableProps {
     headers: string[],
     data: ProductCardProps[],
     handleDelete?:any;
+    handleUpdate?: any;
 }

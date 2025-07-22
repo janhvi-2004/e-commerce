@@ -58,7 +58,7 @@ const getProducts = asyncHandler(async (req, res) => {
 
 const deleteProduct = asyncHandler(async (req, res) => {
   const { _id } = req.body;
-  console.log("id to delete",_id);
+  console.log("id to delete", _id);
 
   if (!_id) {
     throw new ApiError(400, "Product Id is required");
@@ -75,7 +75,50 @@ const deleteProduct = asyncHandler(async (req, res) => {
 });
 
 const updateProduct = asyncHandler(async (req, res) => {
+  const { productName, category, price, quantity } = req.body;
+  console.log("update product", req.body);
   
+  if (
+    [productName, category, price, quantity].some((field) => {
+      field?.trim() === "";
+    })
+  ) {
+    throw new ApiError(400, "All fields are required");
+  }
+  const imageLocalPath = req.files?.productImage[0]?.path;
+  if (!imageLocalPath) {
+    throw new ApiError(400, "Image file is required");
+  }
+
+  const image = await uploadOnCloudinary(imageLocalPath);
+
+  if (!image?.url) {
+    throw new ApiError(400, "Image upload failed");
+  }
+
+  const updatedProduct = await Product.findByIdAndUpdate(
+    req.body?._id,
+    {
+      $set: {
+        productName: productName,
+        category: category,
+        price: price,
+        quantity: quantity,
+        productImage: image.url || "",
+      },
+    },
+    { new: true }
+  );
+
+  return res
+    .status(200)
+    .json(
+      new ApiResponse(
+        200,
+        updatedProduct,
+        "Product Details updated successfully"
+      )
+    );
 });
 
-export { addProduct, getProducts, deleteProduct };
+export { addProduct, getProducts, deleteProduct, updateProduct };

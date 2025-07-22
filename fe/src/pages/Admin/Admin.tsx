@@ -6,7 +6,12 @@ import axiosInstance from "../../axiosInstance";
 import { toast } from "react-toastify";
 import Table from "../../components/Table/Table";
 import type { ProductCardProps } from "../../components/ProductCard/ProductCard.types";
-import { addProduct, deleteProduct, fetchProducts } from "../../services/product.service";
+import {
+  addProduct,
+  deleteProduct,
+  fetchProducts,
+  updateProduct,
+} from "../../services/product.service";
 
 function Admin() {
   const [form, setForm] = useState({
@@ -22,6 +27,9 @@ function Admin() {
 
   const [showAddModal, setShowAddModal] = useState(false);
 
+  const [showUpdateModal, setShowUpdateModal] = useState(false);
+
+  const [productToUpdate, setProductToUpdate] = useState<string>("");
   const handleChange = (e: any) => {
     setForm({
       ...form,
@@ -51,7 +59,6 @@ function Admin() {
         quantity: "",
       });
       setUploadedImage(null);
-console.log("response", res);
 
       const addedProduct = res.data;
       setData((prev) => [
@@ -96,10 +103,20 @@ console.log("response", res);
   const handleShowAddModal = () => {
     setShowAddModal((prev) => !prev);
   };
-
+  const handleShowUpdateModal = (_id: string) => {
+    setProductToUpdate(_id);
+    setForm({
+      productName:
+        data.find((product) => product._id === _id)?.productName || "",
+      category: data.find((product) => product._id === _id)?.category || "",
+      price: String(data.find((product) => product._id === _id)?.price ?? ""),
+      quantity: String(
+        data.find((product) => product._id === _id)?.quantity ?? ""
+      ),
+    });
+    setShowUpdateModal((prev) => !prev);
+  };
   const handleDeleteProduct = async (_id: string) => {
-    console.log("dfghj", _id);
-    
     try {
       await deleteProduct(_id);
       setData((prev) => prev.filter((product) => product._id !== _id));
@@ -108,15 +125,51 @@ console.log("response", res);
     }
   };
 
+  const submitEditProductForm = async (e: any) => {
+    e.preventDefault();
+    const formData = new FormData();
+
+    if (!uploadedImage) {
+      throw new Error("Please select an image file");
+    }
+    formData.append("productName", form.productName);
+    formData.append("category", form.category);
+    formData.append("price", form.price);
+    formData.append("quantity", form.quantity);
+    formData.append("productImage", uploadedImage);
+    formData.append("_id", productToUpdate);
+    try {
+      const res = await updateProduct(formData);
+      setForm({
+        productName: "",
+        category: "",
+        price: "",
+        quantity: "",
+      });
+      setUploadedImage(null);
+      toast.success("Product updated successfully");
+      setShowUpdateModal(false);
+    } catch (error) {
+      throw new Error("Error in form submission");
+    }
+  };
+const showModal = showAddModal || showUpdateModal;
   return (
     <div className={styles.AdminPage}>
-      {showAddModal && (
+      {showModal && (
         <div className={styles.ModalOverlay}>
           <div className={styles.Modal}>
-            <form className={styles.Form} onSubmit={submitAddProductForm}>
+            <form
+              className={styles.Form}
+              onSubmit={
+                showAddModal ? submitAddProductForm : submitEditProductForm
+              }
+            >
               <div className={styles.ModalHeader}>
                 <Button
-                  onClick={handleShowAddModal}
+                  onClick={
+                    showAddModal ? handleShowAddModal : handleShowUpdateModal
+                  }
                   text={"X"}
                   type={"Common"}
                 />
@@ -178,7 +231,7 @@ console.log("response", res);
               </div>
               <Button
                 className={styles.AddProductBtn}
-                text={"Add Product"}
+                text={showAddModal ? "Add" : "Update"}
                 type={"Success"}
               />
             </form>
@@ -194,6 +247,7 @@ console.log("response", res);
         caption={"Products Table"}
         headers={["Product Name", "Category", "Price", "Quantity", "Image"]}
         data={finalProducts}
+        handleUpdate={handleShowUpdateModal}
         handleDelete={handleDeleteProduct}
       />
     </div>

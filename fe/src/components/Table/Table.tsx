@@ -2,7 +2,7 @@ import type { TableProps } from "./Table.types";
 import styles from "./Table.module.scss";
 import Button from "../Button/Button";
 
-function Table({ caption, headers, data, handleDelete }: TableProps) {
+function Table({ caption, headers, data, handleDelete, handleUpdate }: TableProps) {
   return (
     <table className={styles.Table}>
       <caption className={styles.Caption}>{caption}</caption>
@@ -31,7 +31,7 @@ function Table({ caption, headers, data, handleDelete }: TableProps) {
               />
             </td>
             <td className={`${styles.Cell} ${styles.Actions}`}>
-              <Button text={"Update"} type={"Common"} />
+              <Button text={"Update"} type={"Common"} onClick={() => handleUpdate(rowData?._id) }/>
               <Button text={"Delete"} type={"Error"} onClick={() => handleDelete(rowData?._id)} />
             </td>
           </tr>

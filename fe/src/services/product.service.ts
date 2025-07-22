@@ -21,3 +21,12 @@ export const deleteProduct = async (_id: string) => {
   });
   return response.data;
 };
+
+export const updateProduct = async (data: any) => {
+  const response = await axiosInstance.patch("/product/update", data, {
+    headers: {
+      "Content-Type": "multipart/form-data",
+    },
+  });
+  return response.data;
+};
