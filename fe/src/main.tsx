@@ -1,4 +1,4 @@
-import { StrictMode } from "react";
+import { StrictMode, Suspense } from "react";
 import { createRoot } from "react-dom/client";
 import "./index.css";
 
@@ -11,14 +11,23 @@ import {
 import Layout from "./Layout.tsx";
 import Login from "./pages/Login/Login.tsx";
 import Register from "./pages/Register/Register.tsx";
-import Admin from "./pages/Admin/Admin.tsx";
+import { lazy } from "react";
+
+const Admin = lazy(() => import("./pages/Admin/Admin.tsx"));
 
 const router = createBrowserRouter(
   createRoutesFromElements(
     <Route path="/" element={<Layout />}>
-      <Route path="login" element={<Login/>}/>
-      <Route path="register" element={<Register/>}/>
-      <Route path="admin" element={<Admin/>}/>
+      <Route path="login" element={<Login />} />
+      <Route path="register" element={<Register />} />
+      <Route
+        path="admin"
+        element={
+          <Suspense fallback={<div>Loading Admin...</div>}>
+            <Admin />
+          </Suspense>
+        }
+      />
     </Route>
   )
 );

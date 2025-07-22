@@ -30,6 +30,8 @@ function Admin() {
   const [showUpdateModal, setShowUpdateModal] = useState(false);
 
   const [productToUpdate, setProductToUpdate] = useState<string>("");
+
+  const [loading, setLoading] = useState(false);
   const handleChange = (e: any) => {
     setForm({
       ...form,
@@ -42,6 +44,7 @@ function Admin() {
       toast.error("Please select an image file");
       return;
     }
+    setLoading(true);
     const formData = new FormData();
     formData.append("productName", form.productName);
     formData.append("category", form.category);
@@ -74,6 +77,8 @@ function Admin() {
       ]);
     } catch (error) {
       throw new Error();
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -117,16 +122,21 @@ function Admin() {
     setShowUpdateModal((prev) => !prev);
   };
   const handleDeleteProduct = async (_id: string) => {
+    setLoading(true);
     try {
       await deleteProduct(_id);
       setData((prev) => prev.filter((product) => product._id !== _id));
+      toast.success("Product deleted successfully");
     } catch (error) {
       throw new Error();
+    } finally {
+      setLoading(false);
     }
   };
 
   const submitEditProductForm = async (e: any) => {
     e.preventDefault();
+    setLoading(true);
     const formData = new FormData();
 
     if (!uploadedImage) {
@@ -151,11 +161,18 @@ function Admin() {
       setShowUpdateModal(false);
     } catch (error) {
       throw new Error("Error in form submission");
+    } finally {
+      setLoading(false);
     }
   };
-const showModal = showAddModal || showUpdateModal;
+  const showModal = showAddModal || showUpdateModal;
   return (
     <div className={styles.AdminPage}>
+     {loading && (
+      <div className={styles.FallbackOverlay}>
+        <div className={styles.Spinner}>Loading...</div>  
+      </div>
+     )} 
       {showModal && (
         <div className={styles.ModalOverlay}>
           <div className={styles.Modal}>
