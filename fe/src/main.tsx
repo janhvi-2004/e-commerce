@@ -12,6 +12,7 @@ import Layout from "./Layout.tsx";
 import Login from "./pages/Login/Login.tsx";
 import Register from "./pages/Register/Register.tsx";
 import { lazy } from "react";
+import User from "./pages/User/User.tsx";
 
 const Admin = lazy(() => import("./pages/Admin/Admin.tsx"));
 
@@ -25,6 +26,14 @@ const router = createBrowserRouter(
         element={
           <Suspense fallback={<div>Loading Admin...</div>}>
             <Admin />
+          </Suspense>
+        }
+      />
+      <Route
+        path="user"
+        element={
+          <Suspense fallback={<div>Loading User...</div>}>
+            <User />
           </Suspense>
         }
       />
