@@ -2,16 +2,9 @@ import { useEffect, useState } from "react";
 import styles from "./Admin.module.scss";
 import Input from "../../components/Input/Input";
 import Button from "../../components/Button/Button";
-import axiosInstance from "../../axiosInstance";
 import { toast } from "react-toastify";
 import Table from "../../components/Table/Table";
-import type { ProductCardProps } from "../../components/ProductCard/ProductCard.types";
-import {
-  addProduct,
-  deleteProduct,
-  fetchProducts,
-  updateProduct,
-} from "../../services/product.service";
+import { useProductContext } from "../../context/product.context";
 
 function Admin() {
   const [form, setForm] = useState({
@@ -20,10 +13,8 @@ function Admin() {
     price: "",
     quantity: "",
   });
-
+const { products, loading, addProduct, deleteProduct, updateProduct, refetch} = useProductContext();
   const [uploadedImage, setUploadedImage] = useState<File | null>(null);
-
-  const [data, setData] = useState<ProductCardProps[]>([]);
 
   const [showAddModal, setShowAddModal] = useState(false);
 
@@ -31,7 +22,6 @@ function Admin() {
 
   const [productToUpdate, setProductToUpdate] = useState<string>("");
 
-  const [loading, setLoading] = useState(false);
   const handleChange = (e: any) => {
     setForm({
       ...form,
@@ -44,7 +34,7 @@ function Admin() {
       toast.error("Please select an image file");
       return;
     }
-    setLoading(true);
+    
     const formData = new FormData();
     formData.append("productName", form.productName);
     formData.append("category", form.category);
@@ -52,7 +42,8 @@ function Admin() {
     formData.append("quantity", form.quantity);
     formData.append("productImage", uploadedImage);
     try {
-      const res = await addProduct(formData);
+      addProduct(formData);
+      refetch();
       setShowAddModal(false);
       toast.success("Product added successfully");
       setForm({
@@ -63,47 +54,30 @@ function Admin() {
       });
       setUploadedImage(null);
 
-      const addedProduct = res.data;
-      setData((prev) => [
-        ...prev,
-        {
-          _id: addedProduct._id,
-          productName: addedProduct.productName,
-          category: addedProduct.category,
-          price: addedProduct.price,
-          quantity: addedProduct.quantity,
-          productImage: addedProduct.productImage,
-        },
-      ]);
     } catch (error) {
       throw new Error();
     } finally {
-      setLoading(false);
+      
     }
   };
 
-  const getProducts = async () => {
-    const products = await fetchProducts();
-    setData(products);
-  };
-
   useEffect(() => {
-    getProducts();
+    refetch();
   }, []);
 
-  const finalProducts: ProductCardProps[] = data.map((product) => {
-    return {
-      _id: product._id,
-      productName: product.productName,
-      category:
-        product.category.toLowerCase() === "top wear"
-          ? "Topwear"
-          : "Bottomwear",
-      price: product.price,
-      quantity: product.quantity,
-      productImage: product.productImage,
-    };
-  });
+  // const finalProducts: ProductCardProps[] = data.map((product) => {
+  //   return {
+  //     _id: product._id,
+  //     productName: product.productName,
+  //     category:
+  //       product.category.toLowerCase() === "top wear"
+  //         ? "Topwear"
+  //         : "Bottomwear",
+  //     price: product.price,
+  //     quantity: product.quantity,
+  //     productImage: product.productImage,
+  //   };
+  // });
 
   const handleShowAddModal = () => {
     setShowAddModal((prev) => !prev);
@@ -112,31 +86,31 @@ function Admin() {
     setProductToUpdate(_id);
     setForm({
       productName:
-        data.find((product) => product._id === _id)?.productName || "",
-      category: data.find((product) => product._id === _id)?.category || "",
-      price: String(data.find((product) => product._id === _id)?.price ?? ""),
+        products.find((product) => product._id === _id)?.productName || "",
+      category: products.find((product) => product._id === _id)?.category || "",
+      price: String(products.find((product) => product._id === _id)?.price ?? ""),
       quantity: String(
-        data.find((product) => product._id === _id)?.quantity ?? ""
+        products.find((product) => product._id === _id)?.quantity ?? ""
       ),
     });
     setShowUpdateModal((prev) => !prev);
   };
   const handleDeleteProduct = async (_id: string) => {
-    setLoading(true);
+    
     try {
-      await deleteProduct(_id);
-      setData((prev) => prev.filter((product) => product._id !== _id));
+     deleteProduct(_id);
+      refetch();
       toast.success("Product deleted successfully");
     } catch (error) {
       throw new Error();
     } finally {
-      setLoading(false);
+      
     }
   };
 
   const submitEditProductForm = async (e: any) => {
     e.preventDefault();
-    setLoading(true);
+    
     const formData = new FormData();
 
     if (!uploadedImage) {
@@ -149,7 +123,8 @@ function Admin() {
     formData.append("productImage", uploadedImage);
     formData.append("_id", productToUpdate);
     try {
-      const res = await updateProduct(formData);
+      updateProduct(formData);
+      refetch();
       setForm({
         productName: "",
         category: "",
@@ -162,7 +137,7 @@ function Admin() {
     } catch (error) {
       throw new Error("Error in form submission");
     } finally {
-      setLoading(false);
+      
     }
   };
   const showModal = showAddModal || showUpdateModal;
@@ -263,7 +238,7 @@ function Admin() {
       <Table
         caption={"Products Table"}
         headers={["Product Name", "Category", "Price", "Quantity", "Image"]}
-        data={finalProducts}
+        data={products}
         handleUpdate={handleShowUpdateModal}
         handleDelete={handleDeleteProduct}
       />
