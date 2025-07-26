@@ -64,21 +64,7 @@ const { products, loading, addProduct, deleteProduct, updateProduct, refetch} = 
   useEffect(() => {
     refetch();
   }, []);
-
-  // const finalProducts: ProductCardProps[] = data.map((product) => {
-  //   return {
-  //     _id: product._id,
-  //     productName: product.productName,
-  //     category:
-  //       product.category.toLowerCase() === "top wear"
-  //         ? "Topwear"
-  //         : "Bottomwear",
-  //     price: product.price,
-  //     quantity: product.quantity,
-  //     productImage: product.productImage,
-  //   };
-  // });
-
+  
   const handleShowAddModal = () => {
     setShowAddModal((prev) => !prev);
   };

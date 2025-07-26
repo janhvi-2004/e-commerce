@@ -9,7 +9,20 @@ function User() {
   
   return (
     <div className={styles.UserPage}>
-      <Card productName={"Dressberry"} category={"Top Wear"} price={199} quantity={20} productImage={image}/>
+      <div className={styles.ProductList}>
+      {
+        products.map((product) => (
+          <Card 
+            key={product._id}
+            productName={product.productName}
+            category={product.category}
+            productImage={product.productImage}
+            price={product.price} 
+            quantity={product.quantity}          
+            />
+        ))
+      }
+      </div>
     </div>
   )
 }
