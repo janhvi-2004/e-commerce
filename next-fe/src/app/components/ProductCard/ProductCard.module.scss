@@ -1,0 +1,13 @@
+.ProductCard {
+  display: flex;
+  flex-direction: column;
+  height: 10rem;
+  .Image {
+    flex: 3;
+  }
+  .Info {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+  }
+}
