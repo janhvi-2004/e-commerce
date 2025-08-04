@@ -77,7 +77,7 @@ const deleteProduct = asyncHandler(async (req, res) => {
 const updateProduct = asyncHandler(async (req, res) => {
   const { productName, category, price, quantity } = req.body;
   console.log("update product", req.body);
-  
+
   if (
     [productName, category, price, quantity].some((field) => {
       field?.trim() === "";
@@ -121,4 +121,21 @@ const updateProduct = asyncHandler(async (req, res) => {
     );
 });
 
-export { addProduct, getProducts, deleteProduct, updateProduct };
+const getProduct = asyncHandler(async (req, res) => {
+  const { productId } = req.params;
+  console.log("productId", productId);
+  if (!productId) {
+    throw new ApiError(400, "Product ID is required");
+  }
+  const product = await Product.findById(productId);
+  console.log("product", product);
+
+  if (!product) {
+    throw new ApiError(404, "Product not found");
+  }
+  return res
+    .status(200)
+    .json(new ApiResponse(200, product, "Product fetched successfully"));
+});
+
+export { addProduct, getProducts, deleteProduct, updateProduct, getProduct };

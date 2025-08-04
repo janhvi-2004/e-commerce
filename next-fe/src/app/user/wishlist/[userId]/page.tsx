@@ -8,12 +8,13 @@ function Wishlist() {
   const { wishlist, loading } = useUserContext();
 
   if (loading) return <p>Loading wishlist...</p>;
-console.log(wishlist, loading);
+  console.log(wishlist, loading);
   return (
     <div>
       {wishlist && wishlist.length > 0 ? (
         wishlist.map((item) => (
           <Card
+            _id={item._id}
             key={item._id}
             productName={item.productName}
             category={item.category}

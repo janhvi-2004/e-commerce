@@ -1,6 +1,12 @@
 import Router from "express";
 import { upload } from "../middlewares/multer.middleware.js";
-import { addProduct, deleteProduct, getProducts, updateProduct } from "../controllers/product.controller.js";
+import {
+  addProduct,
+  deleteProduct,
+  getProduct,
+  getProducts,
+  updateProduct,
+} from "../controllers/product.controller.js";
 
 const router = Router();
 
@@ -15,4 +21,6 @@ router.route("/delete").delete(deleteProduct);
 router
   .route("/update")
   .patch(upload.fields([{ name: "productImage", maxCount: 1 }]), updateProduct);
+
+router.route("/:productId").get(getProduct);
 export default router;

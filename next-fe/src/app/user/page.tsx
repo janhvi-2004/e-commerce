@@ -7,20 +7,21 @@ function User() {
   console.log(products, loading);
 
   return (
-      <div className={styles.UserPage}>
-        <div className={styles.ProductList}>
-          {products.map((product) => (
-            <Card
-              key={product._id}
-              productName={product.productName}
-              category={product.category}
-              productImage={product.productImage}
-              price={product.price}
-              quantity={product.quantity}
-            />
-          ))}
-        </div>
+    <div className={styles.UserPage}>
+      <div className={styles.ProductList}>
+        {products.map((product) => (
+          <Card
+            _id={product._id}
+            key={product._id}
+            productName={product.productName}
+            category={product.category}
+            productImage={product.productImage}
+            price={product.price}
+            quantity={product.quantity}
+          />
+        ))}
       </div>
+    </div>
   );
 }
 

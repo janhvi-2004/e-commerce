@@ -1,3 +1,4 @@
+"use client"
 import { createContext, useContext, useEffect, useState } from "react";
 
 import {
@@ -5,6 +6,7 @@ import {
   addProduct as apiAddProduct,
   deleteProduct as apiDeleteProduct,
   updateProduct as apiUpdateProduct,
+  getProduct as apiGetProduct,
 } from "../services/product.service";
 
 import type { ProductCardProps } from "../components/ProductCard/ProductCard.types";
@@ -16,6 +18,8 @@ interface ProductContextType {
   deleteProduct: (_id: string) => Promise<void>;
   updateProduct: (data: FormData) => Promise<void>;
   refetch: () => void;
+  getProduct: (productId: string) => Promise<ProductCardProps | null>;
+  product: ProductCardProps | null;
 }
 
 const ProductContext = createContext<ProductContextType | null>(null);
@@ -27,6 +31,7 @@ export const ProductProvider = ({
 }) => {
   const [products, setProducts] = useState<ProductCardProps[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
+  const [product, setProduct] = useState<ProductCardProps | null>(null);
 
   const loadProducts = async () => {
     setLoading(true);
@@ -79,6 +84,21 @@ export const ProductProvider = ({
       setLoading(false);
     }
   };
+
+  const getProduct = async (productId: string): Promise<ProductCardProps | null> => {
+    setLoading(true);
+    try {
+      const productGot = await apiGetProduct(productId);
+      setProduct(productGot?.data || null);
+      return productGot?.data || null;
+    } catch (error) {
+      console.error("Failed to get product:", error);
+      return null;
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <ProductContext.Provider
       value={{
@@ -88,6 +108,8 @@ export const ProductProvider = ({
         deleteProduct,
         updateProduct,
         refetch: loadProducts,
+        getProduct,
+        product,
       }}
     >
       {children}
