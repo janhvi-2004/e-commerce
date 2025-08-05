@@ -61,10 +61,9 @@ const wishListProduct = asyncHandler(async (req, res) => {
   const { productId } = req.params;
   console.log("productId", productId);
 
-  const { _id } = req.body;
-  console.log("_id", _id);
+  const { userId } = req.body;
 
-  const user = await User.findById(_id);
+  const user = await User.findById(userId);
   console.log("user", user);
 
   if (!user) {

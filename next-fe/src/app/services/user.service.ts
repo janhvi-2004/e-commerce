@@ -16,3 +16,10 @@ export const getWishlist = async (userId: string) => {
   console.log("Wishlist response:", response.data.data);
   return response.data.data;
 }
+
+export const addToWishlist = async (userId: string, productId: string) => { 
+  console.log("Adding to wishlist in service:", userId, productId);
+  const response = await axiosInstance.post(`user/wishlist/${productId}`, { userId });
+  console.log("Add to wishlist response:", response.data);
+  return response.data;
+}

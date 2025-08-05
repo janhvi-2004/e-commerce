@@ -1,12 +1,16 @@
 import { createContext, useContext, useEffect, useState } from "react";
 
-import { getWishlist } from "../services/user.service";
+import {
+  getWishlist,
+  addToWishlist as apiAddToWishlist,
+} from "../services/user.service";
 
 import type { ProductCardProps } from "../components/ProductCard/ProductCard.types";
 
 interface UserContextType {
   wishlist: ProductCardProps[];
   loading: boolean;
+  addToWishlist: (productId: string, userId: string) => Promise<void>;
 }
 
 const UserContext = createContext<UserContextType | null>(null);
@@ -40,8 +44,18 @@ export const UserProvider = ({
     }
   }, [userId]);
 
+  const addToWishlist = async (productId: string, userId: string) => {
+    console.log("Adding to wishlist in context:", productId, userId);
+    try {
+      const updatedWishlist = await apiAddToWishlist(userId, productId);
+      console.log("Product added to wishlist:", updatedWishlist);
+    } catch (error) {
+      console.error("Failed to add product to wishlist:", error);
+    }
+  };
+
   return (
-    <UserContext.Provider value={{ wishlist, loading }}>
+    <UserContext.Provider value={{ wishlist, loading, addToWishlist }}>
       {children}
     </UserContext.Provider>
   );

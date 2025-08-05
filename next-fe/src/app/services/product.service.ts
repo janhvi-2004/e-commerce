@@ -33,6 +33,6 @@ export const updateProduct = async (data: any) => {
 
 export const getProduct = async (productId: string) => {
   const response = await axiosInstance.get(`/product/${productId}`);
-  console.log("getProduct response:", response.data);
+  // console.log("getProduct response:", response.data);
   return response.data;
 }
