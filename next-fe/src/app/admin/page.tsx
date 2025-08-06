@@ -6,6 +6,7 @@ import Button from "../components/Button/Button";
 import { toast } from "react-toastify";
 import Table from "../components/Table/Table";
 import { ProductProvider, useProductContext } from "../context/product.context";
+import Loader from "../components/Loader/Loader";
 
 function Admin() {
   const [form, setForm] = useState({
@@ -134,11 +135,7 @@ function Admin() {
   const showModal = showAddModal || showUpdateModal;
   return (
     <div className={styles.AdminPage}>
-      {loading && (
-        <div className={styles.FallbackOverlay}>
-          <div className={styles.Spinner}>Loading...</div>
-        </div>
-      )}
+      {loading && <Loader/> }
       {showModal && (
         <div className={styles.ModalOverlay}>
           <div className={styles.Modal}>

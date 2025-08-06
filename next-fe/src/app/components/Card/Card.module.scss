@@ -8,6 +8,8 @@
   overflow: hidden;
   transition: box-shadow 0.3s, transform 0.3s;
   cursor: pointer;
+  text-decoration: none;
+  color: inherit;
 
   &:hover {
     box-shadow: 0 8px 24px rgba(60, 60, 60, 0.18);
