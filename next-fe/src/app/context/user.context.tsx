@@ -48,6 +48,7 @@ export const UserProvider = ({
     console.log("Adding to wishlist in context:", productId, userId);
     try {
       const updatedWishlist = await apiAddToWishlist(userId, productId);
+      setWishlist((prevWishlist) => [...prevWishlist, updatedWishlist.data]);
       console.log("Product added to wishlist:", updatedWishlist);
     } catch (error) {
       console.error("Failed to add product to wishlist:", error);

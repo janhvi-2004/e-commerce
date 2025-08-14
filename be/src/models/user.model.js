@@ -1,4 +1,5 @@
 import mongoose, { Schema } from "mongoose";
+import jwt from "jsonwebtoken";
 
 const userSchema = new Schema(
   {
@@ -33,8 +34,38 @@ const userSchema = new Schema(
         ref: "Product",
       },
     ],
+    refreshToken: {
+      type: String,
+    },
   },
   { timestamps: true }
 );
+
+userSchema.generateAccessToken = function () {
+  return jwt.sign(
+    {
+      _id: this._id,
+      firstName: this.firstName,
+      lastName: this.lastName,
+      username: this.username,
+    },
+    process.env.ACCESS_TOKEN_SECRET,
+    {
+      expiresIn: process.env.ACCESS_TOKEN_EXPIRY || "1d",
+    }
+  );
+};
+
+userSchema.generateRefreshToken = function () {
+  return jwt.sign(
+    {
+      _id: this._id,
+    },
+    process.env.REFRESh_TOKEN_SECRET,
+    {
+      expiresIn: process.env.REFRESh_TOKEN_EXPIRY || "10d",
+    }
+  );
+};
 
 export const User = mongoose.model("User", userSchema);
