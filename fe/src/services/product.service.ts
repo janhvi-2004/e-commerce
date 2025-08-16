@@ -15,7 +15,6 @@ export const fetchProducts = async () => {
 };
 
 export const deleteProduct = async (_id: string) => {
-  console.log("here", _id);
   const response = await axiosInstance.delete("/product/delete", {
     data: { _id },
   });

@@ -16,7 +16,6 @@ function ProductPage() {
   const [isWishlistedProduct, setIsWishlistedProduct] = useState(false);
   const params = useParams();
   const productId = params?.productId as string;
-  console.log("Product ID: in page.tsx", productId);
   const { product, getProduct } = useProductContext();
   const handleGetProduct = async () => {
     await getProduct(productId);
@@ -34,7 +33,6 @@ function ProductPage() {
     setIsWishlistedProduct(isWishlisted);
   }, [wishlist, productId, addToWishlist]);
 
-  console.log("Is Wishlisted Product:", wishlist);
 
   return (
     <div className={styles.productPage}>

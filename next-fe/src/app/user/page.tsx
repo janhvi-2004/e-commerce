@@ -4,7 +4,6 @@ import styles from "./user.module.scss";
 import { ProductProvider, useProductContext } from "../context/product.context";
 function User() {
   const { products, loading } = useProductContext();
-  console.log(products, loading);
 
   return (
     <div className={styles.UserPage}>

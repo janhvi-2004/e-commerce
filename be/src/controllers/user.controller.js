@@ -2,11 +2,14 @@ import { asyncHandler } from "../utils/asyncHandler.js";
 import { ApiError } from "../utils/ApiError.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
 import { User } from "../models/user.model.js";
-import { Product } from "../models/product.model.js";
 
 const generateAccessAndRefreshToken = async (userId) => {
   try {
     const user = await User.findById(userId);
+    console.log("Generating tokens for user:", user.username);
+    if (!user) {
+      throw new ApiError(404, "User not found for token generation");
+    }
     const accessToken = user.generateAccessToken();
     const refreshToken = user.generateRefreshToken();
 
@@ -71,10 +74,10 @@ const loginUser = asyncHandler(async (req, res) => {
   }
 
 // generate access and refresh token
-
-  const { accessToken, refreshToken } = await generateAccessAndRefreshToken(
-    userPresent._id
-  );
+console.log("Generating tokens for user:", userPresent.username);
+  // const { accessToken, refreshToken } = await generateAccessAndRefreshToken(
+  //   userPresent._id
+  // );
 
   const loggedInUser = await User.findById(userPresent._id).select(
     "-password -refreshToken"

@@ -15,7 +15,6 @@ export const fetchProducts = async () => {
 };
 
 export const deleteProduct = async (_id: string) => {
-  console.log("here", _id);
   const response = await axiosInstance.delete("/product/delete", {
     data: { _id },
   });
@@ -33,6 +32,5 @@ export const updateProduct = async (data: any) => {
 
 export const getProduct = async (productId: string) => {
   const response = await axiosInstance.get(`/product/${productId}`);
-  // console.log("getProduct response:", response.data);
   return response.data;
 }

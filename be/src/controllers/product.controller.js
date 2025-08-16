@@ -58,13 +58,11 @@ const getProducts = asyncHandler(async (req, res) => {
 
 const deleteProduct = asyncHandler(async (req, res) => {
   const { _id } = req.body;
-  console.log("id to delete", _id);
 
   if (!_id) {
     throw new ApiError(400, "Product Id is required");
   }
   const productToDelete = await Product.findByIdAndDelete(_id);
-  console.log("product to delete", productToDelete);
 
   if (!productToDelete) {
     throw new ApiError(404, "Product not found");
@@ -76,7 +74,6 @@ const deleteProduct = asyncHandler(async (req, res) => {
 
 const updateProduct = asyncHandler(async (req, res) => {
   const { productName, category, price, quantity } = req.body;
-  console.log("update product", req.body);
 
   if (
     [productName, category, price, quantity].some((field) => {
@@ -123,12 +120,10 @@ const updateProduct = asyncHandler(async (req, res) => {
 
 const getProduct = asyncHandler(async (req, res) => {
   const { productId } = req.params;
-  console.log("productId", productId);
   if (!productId) {
     throw new ApiError(400, "Product ID is required");
   }
   const product = await Product.findById(productId);
-  console.log("product", product);
 
   if (!product) {
     throw new ApiError(404, "Product not found");

@@ -8,7 +8,6 @@ function Wishlist() {
   const { wishlist, loading } = useUserContext();
 
   if (loading) return <p>Loading wishlist...</p>;
-  console.log(wishlist, loading);
   return (
     <div>
       {wishlist && wishlist.length > 0 ? (
